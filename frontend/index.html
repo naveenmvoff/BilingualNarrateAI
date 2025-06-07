@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BilingualNarrateAI - AI Story Generator</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f59e0b;
+            --light-bg: #f8fafc;
+            --dark-bg: #1e293b;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --text-light: #94a3b8;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            background-image: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+            background-attachment: fixed;
+        }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Generator Section */
+        .generator-section {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .input-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .generator-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .generator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .card-title i {
+            background-color: var(--primary-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            resize: none;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        #loading {
+            margin: 20px 0;
+            display: none;  /* Change from flex to none for initial state */
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary-color);
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Output Sections */
+        .output-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .output {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 0;
+            display: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #output {
+            background-color: #fff3e0;
+            border: 1px solid #ffcc80;
+        }
+
+        #tamil-output {
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+        }
+
+        .output h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .output p {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .story-type-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: white;
+        }
+
+        #output .story-type-icon {
+            background-color: #ff9800;
+        }
+
+        #tamil-output .story-type-icon {
+            background-color: #4caf50;
+        }
+
+        .audio-controls {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #generate-audio-btn {
+            background-color: var(--secondary-color);
+            width: auto;
+            margin: 0 auto;
+        }
+
+        #generate-audio-btn:hover {
+            background-color: #e67e22;
+        }
+
+        #audio-player {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-top: 50px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--dark-bg);
+        }
+
+        .feature-cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #f0f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary-color);
+            font-size: 30px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark-bg);
+        }
+
+        .feature-desc {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-title:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            color: var(--text-light);
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .feature-cards, .output-container {
+                flex-direction: column;
+            }
+
+            .feature-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <div class="logo-icon">✨</div>
+                    <span>BilingualNarrateAI</span>
+                </div>
+                <!-- <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Examples</a></li>
+                        <li><a href="#">About</a></li>
+                    </ul>
+                </nav> -->
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1>Turn Your Ideas Into Captivating Stories</h1>
+                <p>Our AI-powered story generator creates unique narratives in both English and Tamil, with spoken audio capabilities.</p>
+            </section>
+
+            <!-- Generator Section -->
+            <section class="generator-section">
+                <div class="input-container">
+                    <div class="generator-card">
+                        <div class="card-title">
+                            <!-- <i>✏️</i> -->
+                            <span>Create Your Story</span>
+                        </div>
+                        <textarea id="prompt" placeholder="Enter your English prompt here (e.g., 'A mysterious adventure in an ancient forest')..."></textarea>
+                        <button id="generate-btn">
+                            <span>Generate Story</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        <div id="loading">
+                            <div class="loader"></div>
+                            <span>Crafting your story...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-container">
+                <!-- English Story Output -->
+                <div class="output" id="output">
+                    <h2>
+                        <div class="story-type-icon">🇬🇧</div>
+                        English Story
+                    </h2>
+                    <p id="story-text"></p>
+                    <!-- Add Audio Controls for English -->
+                    <div class="audio-controls">
+                        <button id="generate-english-audio-btn" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                            </svg>
+                            <span>Generate English Audio</span>
+                        </button>
+                        <audio id="english-audio-player" controls style="display: none;"></audio>
+                    </div>
+                </div>
+
+                <!-- Tamil Story Output -->
+                <div class="output" id="tamil-output">
+                    <h2>
+                        <div class="story-type-icon">🇮🇳</div>
+                        Tamil Story
+                    </h2>
+                    <p id="tamil-story-text"></p>
+                    
+                    <!-- Audio Controls -->
+                    <div class="audio-controls">
+                        <button id="generate-audio-btn" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                            </svg>
+                            <span>Generate Tamil Audio</span>
+                        </button>
+                        <audio id="audio-player" controls style="display: none;"></audio>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <h2 class="section-title">Why Use BilingualNarrateAI?</h2>
+                <div class="feature-cards">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h3 class="feature-title">Bilingual Stories</h3>
+                        <p class="feature-desc">Generate stories in both English and Tamil, making storytelling accessible to more audiences.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔊</div>
+                        <h3 class="feature-title">Audio Narration</h3>
+                        <p class="feature-desc">Turn your Tamil stories into spoken audio with our advanced text-to-speech technology.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💡</div>
+                        <h3 class="feature-title">Creative Inspiration</h3>
+                        <p class="feature-desc">Overcome writer's block with AI-powered story generation that sparks your creativity.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3 class="footer-title">BilingualNarrateAI</h3>
+                    <p><b>Unleash your creativity with our AI-powered story generation tool. Create captivating narratives in multiple languages with just a few clicks.</b></p> <br>  
+                    <p><b>Features:</b> AI-driven storytelling | Multilingual support | Seamless editing | Customizable themes</p>  
+                    <p><b>Perfect for:</b> Writers, educators, content creators, and language enthusiasts</p>  
+                    <p><b>Expand Your Reach:</b> Share your stories effortlessly across different cultures and audiences</p>  
+                        
+                    <p>Start your storytelling journey today! 🚀</p>
+                </div>
+                <!-- <div class="footer-col">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Examples</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul> 
+                </div> -->
+                <!-- <div class="footer-col">
+                    <h3 class="footer-title">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Writing Tips</a></li>
+                        <li><a href="#">Story Structures</a></li>
+                        <li><a href="#">Character Development</a></li>
+                        <li><a href="#">Storytelling Guides</a></li>
+                    </ul>
+                </div> -->
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 BilingualNarrateAI. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById("generate-btn").addEventListener("click", async () => {
+            const generateBtn = document.getElementById("generate-btn"); // Add this line
+            const prompt = document.getElementById("prompt").value;
+            const output = document.getElementById("story-text");
+            const tamilOutput = document.getElementById("tamil-story-text");
+            const loadingIndicator = document.getElementById("loading");
+            const loader = document.querySelector(".loader");
+
+            if (!prompt) {
+                alert("Please enter a prompt for your story!");
+                return;
+            }
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.style.opacity = "0.5";
+            generateBtn.style.cursor = "not-allowed";
+
+            // Clear previous outputs and show loading
+            output.textContent = "";
+            tamilOutput.textContent = "";
+            document.getElementById("output").style.display = "none";
+            document.getElementById("tamil-output").style.display = "none";
+            document.getElementById("generate-audio-btn").style.display = "none";
+            document.getElementById("generate-english-audio-btn").style.display = "none";
+            
+            loader.style.display = "inline-block";
+            loadingIndicator.style.display = "flex";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5001/generate-story", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt }),
+                });
+
+                const data = await response.json();
+                
+                // Hide loading before showing results
+                loader.style.display = "none";
+                loadingIndicator.style.display = "none";
+
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.style.opacity = "1";
+                generateBtn.style.cursor = "pointer";
+
+                // Show results
+                document.getElementById("output").style.display = "block";
+                document.getElementById("tamil-output").style.display = "block";
+
+                // Add typewriter effect for English story
+                const englishStory = data.english_story || "No English story generated.";
+                typeWriterEffect(output, englishStory, 10);
+
+                // Add typewriter effect for Tamil story
+                const tamilStory = data.tamil_story || "No Tamil translation available.";
+                typeWriterEffect(tamilOutput, tamilStory, 10);
+
+                document.getElementById("generate-audio-btn").style.display = "block";
+                document.getElementById("generate-english-audio-btn").style.display = "block";
+            } catch (error) {
+                // Re-enable button on error
+                generateBtn.disabled = false;
+                generateBtn.style.opacity = "1";
+                generateBtn.style.cursor = "pointer";
+                
+                loadingIndicator.querySelector("span").textContent = "Error generating story. Please try again.";
+                loader.style.display = "none";
+            }
+        });
+
+        document.getElementById("generate-audio-btn").addEventListener("click", async () => {
+            const tamilStory = document.getElementById("tamil-story-text").textContent;
+            const audioPlayer = document.getElementById("audio-player");
+            const audioBtn = document.getElementById("generate-audio-btn");
+            const originalBtnText = audioBtn.innerHTML;
+
+            // Disable button while generating
+            audioBtn.disabled = true;
+            audioBtn.style.opacity = "0.5";
+            audioBtn.style.cursor = "not-allowed";
+
+            audioBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                </svg>
+                <span>Generating audio...</span>
+            `;
+
+            try {
+                const response = await fetch("http://127.0.0.1:5001/generate-audio", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: tamilStory }),
+                });
+
+                const data = await response.json();
+                audioBtn.innerHTML = originalBtnText;
+                
+                if (data.audio_url) {
+                    // Update the audio source with the complete URL
+                    const audioUrl = `http://127.0.0.1:5001${data.audio_url}`;
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.style.display = "block";
+                    // Only play after loading
+                    audioPlayer.addEventListener('loadeddata', () => {
+                        audioPlayer.play().catch(e => console.error('Playback failed:', e));
+                    });
+                } else {
+                    throw new Error('No audio URL received');
+                }
+
+                // Re-enable button after success
+                audioBtn.disabled = false;
+                audioBtn.style.opacity = "1";
+                audioBtn.style.cursor = "pointer";
+                audioBtn.innerHTML = originalBtnText;
+                
+            } catch (error) {
+                // Re-enable button on error
+                audioBtn.disabled = false;
+                audioBtn.style.opacity = "1";
+                audioBtn.style.cursor = "pointer";
+                audioBtn.innerHTML = originalBtnText;
+                
+                alert("Error generating audio! Please try again.");
+                console.error('Audio generation error:', error);
+            }
+        });
+
+        document.getElementById("generate-english-audio-btn").addEventListener("click", async () => {
+            const englishStory = document.getElementById("story-text").textContent;
+            const audioPlayer = document.getElementById("english-audio-player");
+            const audioBtn = document.getElementById("generate-english-audio-btn");
+            const originalBtnText = audioBtn.innerHTML;
+
+            // Disable button while generating
+            audioBtn.disabled = true;
+            audioBtn.style.opacity = "0.5";
+            audioBtn.style.cursor = "not-allowed";
+
+            audioBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                </svg>
+                <span>Generating audio...</span>
+            `;
+
+            try {
+                const response = await fetch("http://127.0.0.1:5001/generate-audio", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: englishStory, language: "en" }),
+                });
+
+                const data = await response.json();
+                audioBtn.innerHTML = originalBtnText;
+                
+                if (data.audio_url) {
+                    const audioUrl = `http://127.0.0.1:5001${data.audio_url}`;
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.style.display = "block";
+                    audioPlayer.addEventListener('loadeddata', () => {
+                        audioPlayer.play().catch(e => console.error('Playback failed:', e));
+                    });
+                } else {
+                    throw new Error('No audio URL received');
+                }
+
+                // Re-enable button after success
+                audioBtn.disabled = false;
+                audioBtn.style.opacity = "1";
+                audioBtn.style.cursor = "pointer";
+                audioBtn.innerHTML = originalBtnText;
+                
+            } catch (error) {
+                // Re-enable button on error
+                audioBtn.disabled = false;
+                audioBtn.style.opacity = "1";
+                audioBtn.style.cursor = "pointer";
+                audioBtn.innerHTML = originalBtnText;
+                
+                alert("Error generating audio! Please try again.");
+                console.error('Audio generation error:', error);
+            }
+        });
+
+        // Typewriter effect function
+        function typeWriterEffect(element, text, speed) {
+            let i = 0;
+            element.textContent = "";
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, speed);
+        }
+    </script>
+</body>
+</html>
