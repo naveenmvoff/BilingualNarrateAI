@@ -50,7 +50,7 @@ cd BilingualNarrateAI
 (Optional but recommended) Create a virtual environment:
 ``` python
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv\Scripts\activate  #mac venv/bin/activate  
 ```
 
 Install dependencies:
