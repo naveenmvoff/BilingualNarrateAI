@@ -6,7 +6,7 @@
 
 - Story generation in English and Tamil
 - Text-to-speech narration using AI
-- Simple and responsive web interface
+- Simple web interface for user interaction
 - Modular structure for easy development
 
 ---
