@@ -1,7 +1,6 @@
 # BilingualNarrateAI
 
-**BilingualNarrateAI** is a Flask-based bilingual story narration platform, supporting both English and Tamil. It offers AI-generated storytelling capabilities and speech synthesis, all accessible via a simple frontend interface. This repository includes a modular backend built with Flask, and a static HTML frontend for user interaction.
-
+**BilingualNarrateAI** is an AI-powered Flask application that generates bilingual stories and narrates them. It leverages advanced machine learning models for both text generation and speech synthesis, supporting both English and Tamil.
 
 ## Features
 
