@@ -10,6 +10,17 @@
 - Simple and responsive web interface
 - Modular structure for easy development
 
+---
+
+## 🧠 Models Used
+
+| Function              | Model/API Used             | Description |
+|-----------------------|----------------------------|-------------|
+| Story Generation      | `GPT-2`                    | Pretrained text generation model from Hugging Face Transformers |
+| Translation           | `googletrans==4.0.0-rc1`   | Google Translate Python client |
+| Text-to-Speech (TTS)  | `Murf.ai TTS API`          | Cloud-based voice synthesis API with support for multiple voices and languages |
+
+---
 
 ## Project Structure
 
